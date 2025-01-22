@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adam Wareshallee</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            background-color: #f5f5f7;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0071e3;
+        }
+
+        .menu-icon {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .menu-icon span {
+            width: 30px;
+            height: 3px;
+            background-color: #333;
+            transition: 0.3s;
+        }
+
+        /* Desktop navigation styling */
+        nav {
+            display: flex;
+            position: relative;
+            height: auto;
+            background: transparent;
+            transition: background 0.5s;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #0071e3;
+        }
+
+        .mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #333; /* Customize background color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+  transform: translateY(-100%);
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-nav.visible {
+  transform: translateY(0);
+}
+
+.mobile-nav ul {
+  flex-direction: column;
+  text-align: center;
+  list-style: none;
+}
+
+.mobile-nav ul li {
+  margin: 20px 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mobile-nav.visible ul li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-nav ul li a {
+  color: #fff; /* Customize text color */
+  text-decoration: none;
+  font-size: 18px; /* Customize font size */
+  font-weight: bold;
+}
+
+.mobile-nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 32px;
+  color: #fff;
+  cursor: pointer;
+}
+
+        /* Main sections styling */
+        main {
+            margin-top: 80px;
+            padding: 40px;
+            transition: filter 0.5s ease;
+        }
+
+        main.blurred {
+            filter: blur(8px);
+        }
+
+        section {
+            margin-bottom: 60px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        section p,
+        section ul {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Card styling for projects and skills */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            flex: 1 1 300px;
+            position: relative;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        .card .card-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card:hover img {
+            filter: blur(5px);
+            transform: scale(1.1);
+        }
+
+        .card:hover .card-content {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
+    padding: 20px;
+    background: #f5f5f7; /* Light background color */
+    margin-top: 40px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    color: #666; /* Darker text color for footer */
+    margin: 0; /* Remove default margin */
+}
+
+.toggle-theme {
+    padding: 10px 20px;
+    background-color: #0071e3; /* Button color */
+    color: white; /* Button text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+
+     /* Dark Mode Styles */
+     .dark-mode {
+            background-color: #000; /* Keep body background black */
+            color: white; /* Keep white text color */
+        }
+
+        .dark-mode header {
+            background: rgba(50, 50, 50, 0.8); /* Dark header background */
+            color: white; /* White header text */
+        }
+
+        .dark-mode a {
+            color: white; /* White header text */
+        }
+
+        .dark-mode .card {
+            background: #333; /* Dark card background */
+            color: white; /* White card text */
+            box-shadow: 0 4px 20px rgba(255, 252, 252, 0.1);
+        }
+
+        .dark-mode .card .card-content {
+            background: rgba(255, 255, 255, 0.2); /* Light overlay for card content */
+        }
+
+        .dark-mode section {
+            background-color: rgba(50, 50, 50, 0.7); /* Dark section background */
+            color: white; /* White text color for sections */
+            box-shadow: 0 2px 10px rgba(237, 206, 206, 0.1);
+        }
+
+        .dark-mode footer {
+            background: rgba(50, 50, 50, 0.7);;
+            box-shadow: 0 -2px 10px rgba(227, 212, 212, 0.1);
+        }
+
+        .dark-mode footer p {
+            color: #ffc0c0;
+
+        }
+        
+        .dark-mode .card:hover {
+            box-shadow: 0 8px 30px rgba(255, 240, 240, 0.2);
+        }
+     
+
+        /* Media queries for responsive design */
+        @media (max-width: 768px) {
+            .navbar ul {
+                display: none; /* Hide the desktop menu */
+            }
+
+            .menu-icon {
+                display: flex; /* Show the menu icon on mobile */
+            }
+
+            .mobile-nav {
+                display: flex; /* Show mobile nav */
+            }
+
+            .dark-mode .menu-icon span {
+            width: 30px;
+            height: 3px;
+            background-color: #ffffff;
+            transition: 0.3s;
+        }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1 class="logo">Adam Wareshallee</h1>
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#about">About Me</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#workexperience">Work Experience</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="menu-icon" id="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav" id="navbar">
+        <span class="close-btn" id="close-btn">&times;</span>
+        <ul>
+            <li><a href="#about">About Me</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#workexperience">Work Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Hello! I'm a Computing and IT student passionate about technology and coding.</p>
+        </section>
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="card-container">
+                <div class="card">
+                    <img src="https://play-lh.googleusercontent.com/N8xjvL1xXqonuVpNJIbd-0YBjyOcAJ65ULBzGun4zOfxeAJx8iNjseJH4HU3bWdh5zU" alt="Project 1">
+                    <div class="card-content">
+                        <h3>Python Game</h3>
+                        <p>A really fun game I made in Python.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://scriptmag.com/.image/t_share/MjAxMjYxODQ3NzgzOTQxNjMz/touchinggrass-canva.png" alt="Project 2">
+                    <div class="card-content">
+                        <h3>Touching Grass Simulator</h3>
+                        <p>Now people don't have to go outside.</p>
+                    </div>
+                </div>
+                <!-- Add more project cards as needed -->
+            </div>
+        </section>
+        <section id="workexperience">
+            <h2>Work Experience</h2>
+            <div class="card-container">
+                <div class="card">
+                    <img src="https://www.maber.co.uk/app/uploads/2017/09/2462_complete_N67_medium.jpg" alt="Work Experience Place 1">
+                    <div class="card-content">
+                        <h3>Westfield Academy</h3>
+                        <p>Working for Mr Shah.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Road_in_Norway.jpg/640px-Road_in_Norway.jpg" alt="Work Experience Place 2">
+                    <div class="card-content">
+                        <h3>Road</h3>
+                        <p>I helped someone cross the road.</p>
+                    </div>
+                </div>
+            </div>
+            </section>
+            <section id="education">
+                <h2>Education</h2>
+                <div class="card-container">
+                    <div class="card">
+                        <img src="https://www.maber.co.uk/app/uploads/2017/09/2462_complete_N67_medium.jpg" alt="Education Place 1">
+                        <div class="card-content">
+                            <h3>Westfield Academy</h3>
+                            <p>Year 7 to Year 13 (2017 to 2034)</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://www.oxfordscholastica.com/wp-content/uploads/2023/07/cambridge-college.jpg" alt="Education Place 2">
+                        <div class="card-content">
+                            <h3>University</h3>
+                            <p>2024 to 2028</p>
+                        </div>
+                    </div>
+                </div>
+                </section>
+        <section id="skills">
+            <h2>Skills</h2>
+            <div class="card-container">
+                <div class="card">
+                    <img src="https://verpex.com/assets/uploads/images/blog/Basic-HTML-Codes-for-Websites.webp?v=1691760654" alt="HTML">
+                    <div class="card-content">
+                        <h3>HTML</h3>
+                        <p>Proficient in creating structured web pages using HTML.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://www.oxfordwebstudio.com/user/pages/06.da-li-znate/sta-je-css/sta-je-css.png" alt="CSS">
+                    <div class="card-content">
+                        <h3>CSS</h3>
+                        <p>Experienced in styling and creating responsive layouts.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://addons-content.teamspeak.com/1ea680fd-dfd2-49ef-a259-74d27593b867/images/648_366/lua%20plugin.jpg" alt="Lua">
+                    <div class="card-content">
+                        <h3>Lua</h3>
+                        <p>Skilled in scripting and game development using Lua.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8h_BUGp_0Yxt_QUeBeMu32g4kvJ6deNMW5g&s" alt="Python">
+                    <div class="card-content">
+                        <h3>Python</h3>
+                        <p>Knowledgeable in scripting and automating tasks with Python.</p>
+                    </div>
+                </div>
+                <!-- Add more skill cards as needed -->
+            </div>
+        </section>
+        <section id="contact">
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:adamwarshallee@outlook.com">adamwarshallee@outlook.com</a></p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2024 Adams</p>
+        <button class="toggle-theme" id="toggleTheme">Toggle Theme</button> 
+    </footer>
+    <script>
+        const menuIcon = document.getElementById('menu-icon');
+        const navbar = document.getElementById('navbar');
+        const closeBtn = document.getElementById('close-btn');
+        const mainContent = document.querySelector('main');
+
+        menuIcon.onclick = () => {
+            navbar.classList.add('visible');
+            mainContent.classList.add('blurred');
+        }
+
+        closeBtn.onclick = () => {
+            navbar.classList.remove('visible');
+            mainContent.classList.remove('blurred');
+        }
+
+        // Animation on scroll
+        const sections = document.querySelectorAll('section');
+        const options = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: '0px',
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+
+               // Function to apply dark mode styles
+        function applyDarkMode() {
+            const body = document.body;
+            const sections = document.querySelectorAll('section');
+            const footer = document.querySelector('footer');
+
+            body.classList.add('dark-mode'); // Add dark mode class to body
+
+            sections.forEach(section => {
+                section.classList.add('dark-mode'); // Add dark mode class to sections
+            });
+
+            footer.classList.add('dark-mode'); // Add dark mode class to footer
+        }
+
+        // Function to apply light mode styles
+        function applyLightMode() {
+            const body = document.body;
+            const sections = document.querySelectorAll('section');
+            const footer = document.querySelector('footer');
+
+            body.classList.remove('dark-mode'); // Remove dark mode class from body
+
+            sections.forEach(section => {
+                section.classList.remove('dark-mode'); // Remove dark mode class from sections
+            });
+
+            footer.classList.remove('dark-mode'); // Remove dark mode class from footer
+        }
+
+        // Toggle theme function
+        function toggleTheme() {
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            if (isDarkMode) {
+                applyLightMode(); // If in dark mode, switch to light mode
+            } else {
+                applyDarkMode(); // If in light mode, switch to dark mode
+            }
+        }
+
+        // Check if the user prefers dark mode and apply styles accordingly on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                applyDarkMode(); // Apply dark mode if preference is set
+            }
+        });
+
+        // Add event listener to toggle button
+        document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
+    </script>
+</body>
+</html>
